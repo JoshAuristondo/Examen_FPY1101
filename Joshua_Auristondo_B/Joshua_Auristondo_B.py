@@ -84,6 +84,7 @@ def cupos_por_genero(peliculas, cartelera, genero):
 
 def buscar_por_rango(peliculas, cartelera, p_min, p_max):
     lista = []
+
     for codigo in cartelera:
         precio = cartelera[codigo][0]
         cupos = cartelera[codigo][1]
@@ -101,17 +102,25 @@ def buscar_por_rango(peliculas, cartelera, p_min, p_max):
         print("No hay películas en ese rango de precios.")
 
 def buscar_codigo(peliculas, cartelera, codigo):
-    return codigo in peliculas
+    lista_codigos = [str(key) for key in peliculas.keys()]
+    for key in lista_codigos:
+        return key.upper() == codigo.upper()      
+    return False
      
+
 def actualizar_precio(peliculas, cartelera, codigo, precio):
     if not buscar_codigo(peliculas, cartelera, codigo):
         return False
     
     if not validar_precio(precio):
         return False
+
+    lista_codigos = [str(key) for key in peliculas.keys()]
+    for key in lista_codigos:
+        if key.upper() == codigo.upper():
+            cartelera[key][0] = precio
+            return True
     
-    cartelera[codigo][0] = precio
-    return True
     
 def agregar_pelicula(peliculas, cartelera, codigo, titulo, genero, duracion, clasificacion, idioma, es_3d, precio, cupos):
 
@@ -137,11 +146,14 @@ def agregar_pelicula(peliculas, cartelera, codigo, titulo, genero, duracion, cla
 def eliminar_pelicula(peliculas, cartelera, codigo):
     if not buscar_codigo(peliculas, cartelera, codigo):
         return False
-
-    del peliculas[codigo]
-    del cartelera[codigo]
-    return True
     
+    lista_codigos = [str(key) for key in peliculas.keys()]
+    for key in lista_codigos:
+        if key.upper() == codigo.upper():
+            del peliculas[key]
+            del cartelera[key]
+            return True
+            
 def main():
     peliculas = {}
     cartelera = {}
@@ -170,6 +182,7 @@ def main():
                             if p_min <= 0 or p_max <= 0 or p_min > p_max:
                                 print("Valores no validos, ingrese nuevamente")
                             else:
+                                buscar_por_rango(peliculas, cartelera, p_min, p_max)
                                 break
                         except ValueError:
                             print("Debe ingresar valores enteros")
@@ -188,7 +201,7 @@ def main():
                             print("El código no existe")
                         pregunta = input("¿Desea actualizar otro precio (s/n)?: ").strip().lower() == "s"
             case 4:
-                codigo = input("Ingrese código de película: ").strip().upper()
+                codigo = input("Ingrese código de película: ").strip()
                 if not validar_codigo(peliculas, cartelera, codigo):
                     print("¡Codigo no valido!")
                     continue
@@ -246,6 +259,6 @@ def main():
                     else:
                         print("El código no existe")
             case 6:
-                print("Programa finalizado.")       
+                print("Programa finalizado.")           
 
 main()
