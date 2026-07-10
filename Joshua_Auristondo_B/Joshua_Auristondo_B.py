@@ -40,15 +40,31 @@ def validar_genero(genero):
 def validar_duracion(duracion):
     try:
         duracion = int(duracion)
-        if duracion <= 0:
-            return False
-        else:
-            return True
+        return duracion > 0
     except ValueError:
-        return False
+        return False 
 
 def validar_clasificacion(clasificacion):
     return clasificacion.upper() in ["A", "B", "C"]
 
 def validar_idioma(idioma):
     return len(idioma) != 0
+
+def validar_3d(valor):
+    return valor.lower() in ["s", "n"] 
+
+def validar_precio(precio):
+    try:
+        precio = int(precio)
+        return precio > 0
+    except ValueError:
+        return False 
+    
+def validar_cupos(cupos):
+    try:
+        cupos = int(cupos)
+        return cupos >= 0
+    except ValueError:
+        return False 
+    
+##Funciones principales
