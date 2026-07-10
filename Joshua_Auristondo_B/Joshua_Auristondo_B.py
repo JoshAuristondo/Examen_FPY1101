@@ -1,5 +1,5 @@
 def mostrar_menu():
-    menu = ["========== MENÚ PRINCIPAL ==========", 
+    menu = ["\n========== MENÚ PRINCIPAL ==========", 
             "1. Cupos por género", 
             "2. Búsqueda de películas por rango de precio", 
             "3. Actualizar precio de película", 
@@ -101,9 +101,8 @@ def buscar_por_rango(peliculas, cartelera, p_min, p_max):
         print("No hay películas en ese rango de precios.")
 
 def buscar_codigo(peliculas, cartelera, codigo):
-    for codigo in peliculas:
-        return peliculas[codigo].upper() == codigo.upper()        
-
+    return codigo in peliculas
+     
 def actualizar_precio(peliculas, cartelera, codigo, precio):
     if not buscar_codigo(peliculas, cartelera, codigo):
         return False
@@ -120,18 +119,17 @@ def agregar_pelicula(peliculas, cartelera, codigo, titulo, genero, duracion, cla
         return False
 
     peliculas[codigo] = [
-        codigo,
         titulo,
         genero,
-        duracion,
+        int(duracion),
         clasificacion.upper(),
         idioma,
         es_3d.lower() == "s"
     ]
 
     cartelera[codigo] = [
-        precio,
-        cupos
+        int(precio),
+        int(cupos)
     ]
 
     return True
@@ -164,20 +162,90 @@ def main():
                 if len(peliculas) == 0:
                     print("\nNo hay peliculas\n")
                 else:
-                    pass
+                    while True:
+                        try:
+                            p_min = int(input("Ingrese precio mínimo: "))
+                            p_max = int(input("Ingrese precio máximo: "))
+
+                            if p_min <= 0 or p_max <= 0 or p_min > p_max:
+                                print("Valores no validos, ingrese nuevamente")
+                            else:
+                                break
+                        except ValueError:
+                            print("Debe ingresar valores enteros")
+
             case 3:
                 if len(peliculas) == 0:
                     print("\nNo hay peliculas\n")
                 else:
-                    pass
+                    pregunta = True
+                    while pregunta:
+                        codigo = input("Ingrese código de película: ").strip()
+                        precio = input("Ingrese nuevo precio: ")
+                        if actualizar_precio(peliculas, cartelera, codigo, precio):
+                            print("Precio actualizado")
+                        else:
+                            print("El código no existe")
+                        pregunta = input("¿Desea actualizar otro precio (s/n)?: ").strip().lower() == "s"
             case 4:
-                pass
+                codigo = input("Ingrese código de película: ").strip().upper()
+                if not validar_codigo(peliculas, cartelera, codigo):
+                    print("¡Codigo no valido!")
+                    continue
+                titulo = input("Ingrese título: ").strip()
+                if not validar_titulo(titulo):
+                    print("¡Titulo no valido!")
+                    continue                
+                genero = input("Ingrese género: ").strip()
+                if not validar_genero(genero):
+                    print("¡Género no valido!")
+                    continue 
+
+                duracion = input("Ingrese duración (minutos): ")
+                if not validar_duracion(duracion):
+                    print("¡Duración no valida!")
+                    continue                     
+
+                clasificacion = input("Ingrese clasificación: ").strip() 
+                if not validar_clasificacion(clasificacion):
+                    print("¡Clasificación no valida!")
+                    continue
+
+                idioma = input("Ingrese idioma: ").strip()
+                if not validar_idioma(idioma):
+                    print("¡Idioma no valido!")
+                    continue
+
+                es_3d = input("¿Es 3D? (s/n): ")
+                if not validar_3d(es_3d):
+                    print("¡Respuesta no valida!")
+                    continue
+
+                precio = input("Ingrese precio: ") 
+                if not validar_precio(precio):
+                    print("¡Precio no valido!")
+                    continue
+
+                cupos = input("Ingrese cupos: ")
+                if not validar_cupos(cupos):
+                    print("¡Cupos no validos!")
+                    continue 
+
+                if agregar_pelicula(peliculas, cartelera, codigo, titulo, genero, duracion, clasificacion, idioma, es_3d, precio, cupos):
+                    print("Película agregada")
+                else:
+                    print("El código ya existe")
+                
             case 5:
                 if len(peliculas) == 0:
                     print("\nNo hay peliculas\n")
                 else:
-                    pass
+                    codigo = input("Ingrese codigo de pelicula a eliminar: ").strip()
+                    if eliminar_pelicula(peliculas, cartelera, codigo):
+                        print("Película eliminada")
+                    else:
+                        print("El código no existe")
             case 6:
-                print("Programa finalizado.")
+                print("Programa finalizado.")       
 
 main()
